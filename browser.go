@@ -29,7 +29,7 @@ func getPort(browserID string) (int64, error) {
 	return remotePort, err
 }
 
-func login(controlURL string) {
+func login(controlURL string) error {
 	u := launcher.MustResolveURL(controlURL)
 
 	browser := rod.New().NoDefaultDevice().ControlURL(u).MustConnect()
@@ -43,6 +43,12 @@ func login(controlURL string) {
 	utils.Sleep(interval)
 	page.MustElementR("button", "Sign In").MustClick()
 	utils.Sleep(interval)
+
+	if strings.Contains(page.MustHTML(), "Invalid email or password") {
+		return fmt.Errorf("账号被屏蔽")
+	}
+
+	return nil
 
 }
 
@@ -227,28 +233,30 @@ func checkLogin(controlURL string) error {
 	if node != nil {
 
 	} else {
-		login(controlURL)
+		err = login(controlURL)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
 
 }
 
-func getBalance(controlURL string, browserID string) float64 {
+func getBalance(controlURL string, browserID string) (float64, error) {
 	err := checkLogin(controlURL)
 	if err != nil {
-		fmt.Println(err)
 		logger.Info().Str("error", err.Error()).Msg("checkLogin error")
-		waitExit()
+		return 0, err
 	}
 	balance, exist := browserDetail(browserID)
 	logger.Info().Float64("balance", balance).
 		Bool("exist", exist).Msg("getBalance")
 	if exist {
-		return balance
+		return balance, nil
 	}
 
-	return 0
+	return 0, nil
 
 }
 

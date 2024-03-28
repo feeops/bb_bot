@@ -6,3 +6,6 @@ interval: 5
 
 # 优惠链接获取入口
 couponURL: https://capitaloneshopping.com/s/levi.com/coupon
+
+# 模式,0代表只取余额，1代表取余额并取链接
+mode: 0

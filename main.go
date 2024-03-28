@@ -11,8 +11,8 @@ var (
 	bitBaseURL = "http://127.0.0.1:54345"
 
 	client   = req.C()
-	email    = "ggkyzdbeub@hotmail.com"
-	password = "54tG!&&DZ4xV"
+	email    = "xjmctjytcxmoeg@outlook.com"
+	password = "2%)2^w4Y$RyW9e8&lYnUrI"
 )
 
 func main() {
@@ -57,10 +57,22 @@ func main() {
 		fmt.Println("发送浏览器获取控制地址失败")
 		waitExit()
 	}
-	balance := getBalance(controlURL, browserID)
+	var refURL string
+	balance, err := getBalance(controlURL, browserID)
+	if err != nil {
+		fmt.Printf("email: %s %s\n", email, err.Error())
+		db.Account.Create().SetBalance(balance).SetWindowName(windowsName).
+			SetEmail(email).SetPassword(password).SetIP(IP).SetRefURL(refURL).
+			SetRemark(err.Error()).
+			SetIPUsed(IPUsed).SaveX(context.Background())
+		return
+	}
 	fmt.Printf("email: %s 余额: %.2f\n", email, balance)
-	refURL := getRef(controlURL)
-	fmt.Printf("email: %s 推广链接: %s\n", email, refURL)
+	if mode == 1 {
+		refURL = getRef(controlURL)
+		fmt.Printf("email: %s 推广链接: %s\n", email, refURL)
+	}
+
 	db.Account.Create().SetBalance(balance).SetWindowName(windowsName).
 		SetEmail(email).SetPassword(password).SetIP(IP).SetRefURL(refURL).
 		SetIPUsed(IPUsed).SaveX(context.Background())

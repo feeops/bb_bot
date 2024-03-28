@@ -9,6 +9,7 @@ import (
 var (
 	interval  float64
 	couponURL string
+	mode      int
 )
 
 func readConfig() {
@@ -30,5 +31,6 @@ func readConfig() {
 
 	interval = viper.GetFloat64("interval")
 	couponURL = viper.GetString("couponURL")
+	mode = viper.GetInt("mode")
 
 }
